@@ -6,9 +6,49 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C638641C2F4656E10024A0DF /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C638641B2F4656E10024A0DF /* ComposableArchitecture */; };
+		C638643A2F4658000024A0DF /* GritWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C63864302F4658000024A0DF /* GritWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C638643B2F4658000024A0DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C63864042F46566C0024A0DF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C63864352F4658000024A0DF;
+			remoteInfo = GritWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C63864392F4658000024A0DF /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C638643A2F4658000024A0DF /* GritWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C638640C2F46566C0024A0DF /* Grit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Grit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C63864302F4658000024A0DF /* GritWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GritWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C638643D2F4658000024A0DF /* Exceptions for "GritWidget" folder in "GritWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C63864352F4658000024A0DF /* GritWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C638640E2F46566C0024A0DF /* Grit */ = {
@@ -16,10 +56,26 @@
 			path = Grit;
 			sourceTree = "<group>";
 		};
+		C63864312F4658000024A0DF /* GritWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C638643D2F4658000024A0DF /* Exceptions for "GritWidget" folder in "GritWidgetExtension" target */,
+			);
+			path = GritWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C63864092F46566C0024A0DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C638641C2F4656E10024A0DF /* ComposableArchitecture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C63864332F4658000024A0DF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				C638640E2F46566C0024A0DF /* Grit */,
+				C63864312F4658000024A0DF /* GritWidget */,
 				C638640D2F46566C0024A0DF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				C638640C2F46566C0024A0DF /* Grit.app */,
+				C63864302F4658000024A0DF /* GritWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,20 +113,43 @@
 				C63864082F46566C0024A0DF /* Sources */,
 				C63864092F46566C0024A0DF /* Frameworks */,
 				C638640A2F46566C0024A0DF /* Resources */,
+				C63864392F4658000024A0DF /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C638643C2F4658000024A0DF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C638640E2F46566C0024A0DF /* Grit */,
 			);
 			name = Grit;
 			packageProductDependencies = (
+				C638641B2F4656E10024A0DF /* ComposableArchitecture */,
 			);
 			productName = Grit;
 			productReference = C638640C2F46566C0024A0DF /* Grit.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C63864352F4658000024A0DF /* GritWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GritWidgetExtension" */;
+			buildPhases = (
+				C63864322F4658000024A0DF /* Sources */,
+				C63864332F4658000024A0DF /* Frameworks */,
+				C63864342F4658000024A0DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C63864312F4658000024A0DF /* GritWidget */,
+			);
+			name = GritWidgetExtension;
+			productName = GritWidgetExtension;
+			productReference = C63864302F4658000024A0DF /* GritWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -83,6 +164,9 @@
 					C638640B2F46566C0024A0DF = {
 						CreatedOnToolsVersion = 26.3;
 					};
+					C63864352F4658000024A0DF = {
+						CreatedOnToolsVersion = 26.3;
+					};
 				};
 			};
 			buildConfigurationList = C63864072F46566C0024A0DF /* Build configuration list for PBXProject "Grit" */;
@@ -94,18 +178,29 @@
 			);
 			mainGroup = C63864032F46566C0024A0DF;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C638641A2F4656E10024A0DF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C638640D2F46566C0024A0DF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C638640B2F46566C0024A0DF /* Grit */,
+				C63864352F4658000024A0DF /* GritWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C638640A2F46566C0024A0DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C63864342F4658000024A0DF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +217,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C63864322F4658000024A0DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C638643C2F4658000024A0DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C63864352F4658000024A0DF /* GritWidgetExtension */;
+			targetProxy = C638643B2F4658000024A0DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C63864152F46566E0024A0DF /* Debug */ = {
@@ -251,11 +361,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Grit/Grit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F82X95T478;
+				DEVELOPMENT_TEAM = UWP57D8782;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Grit reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -266,13 +378,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit;
+				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -283,11 +392,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Grit/Grit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F82X95T478;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Grit reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -298,13 +409,66 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit;
+				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C63864362F4658000024A0DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GritWidget/GritWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UWP57D8782;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GritWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GritWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov.GritWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C63864372F4658000024A0DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GritWidget/GritWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UWP57D8782;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GritWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GritWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov.GritWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -331,7 +495,35 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GritWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C63864362F4658000024A0DF /* Debug */,
+				C63864372F4658000024A0DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C638641A2F4656E10024A0DF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.23.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C638641B2F4656E10024A0DF /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C638641A2F4656E10024A0DF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C63864042F46566C0024A0DF /* Project object */;
 }
