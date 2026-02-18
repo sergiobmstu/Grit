@@ -11,6 +11,8 @@ struct AppFeature {
     struct State: Equatable {
         var goalDate: Date?
         var workoutCounts: [Date: Int] = [:]
+        var workoutDetails: [Date: [WorkoutEntry]] = [:]
+        var selectedDate: Date?
         var isDatePickerPresented = false
         var isLoading = false
 
@@ -31,6 +33,9 @@ struct AppFeature {
         case setDatePickerPresented(Bool)
         case fetchWorkouts
         case workoutsResponse([Date: Int])
+        case workoutDetailsResponse([Date: [WorkoutEntry]])
+        case selectDate(Date)
+        case dismissDetail
         case fetchFailed
     }
 
@@ -61,8 +66,10 @@ struct AppFeature {
                     return .none
                 }
                 return .run { send in
-                    let counts = try await healthKitClient.fetchWorkouts(startDate, endDate)
-                    await send(.workoutsResponse(counts))
+                    async let counts = healthKitClient.fetchWorkouts(startDate, endDate)
+                    async let details = healthKitClient.fetchWorkoutDetails(startDate, endDate)
+                    await send(.workoutsResponse(try await counts))
+                    await send(.workoutDetailsResponse(try await details))
                 } catch: { _, send in
                     await send(.fetchFailed)
                 }
@@ -72,6 +79,18 @@ struct AppFeature {
                 state.workoutCounts = counts
                 state.isLoading = false
                 syncToWidget(goalDate: state.goalDate, workoutCounts: counts)
+                return .none
+
+            case let .workoutDetailsResponse(details):
+                state.workoutDetails = details
+                return .none
+
+            case let .selectDate(date):
+                state.selectedDate = date
+                return .none
+
+            case .dismissDetail:
+                state.selectedDate = nil
                 return .none
 
             case .fetchFailed:

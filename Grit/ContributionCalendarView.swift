@@ -3,6 +3,7 @@ import SwiftUI
 struct ContributionCalendarView: View {
     let workoutCounts: [Date: Int]
     let dayCount: Int
+    var onDayTapped: ((Date) -> Void)?
 
     private let calendar = Calendar.current
     private let spacing: CGFloat = 4
@@ -111,10 +112,22 @@ struct ContributionCalendarView: View {
         }
     }
 
+    @ViewBuilder
     private func cellView(_ cell: DayCell, size: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: 4)
-            .fill(color(for: cell))
-            .frame(width: size, height: size)
+        switch cell {
+        case .empty:
+            Color.clear
+                .frame(width: size, height: size)
+        case let .day(date, _):
+            Button {
+                onDayTapped?(date)
+            } label: {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(color(for: cell))
+                    .frame(width: size, height: size)
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private func monthLabelsRow(grid: [[DayCell]], cellSize: CGFloat) -> some View {
