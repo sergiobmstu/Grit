@@ -30,6 +30,42 @@ struct AppFeature {
             let days = calendar.dateComponents([.day], from: today, to: raceDay).day ?? 0
             return max(0, days)
         }
+
+        var totalPlannedWorkouts: Int {
+            guard trainingPlan != nil else { return 0 }
+            return plannedWorkouts.values.flatMap { $0 }.filter { $0.workoutType != .restDay }.count
+        }
+
+        var completedPlannedWorkouts: Int {
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            return plannedWorkouts.reduce(0) { count, entry in
+                let (date, workouts) = entry
+                let hasNonRest = workouts.contains { $0.workoutType != .restDay }
+                let hasActual = (workoutCounts[date] ?? 0) > 0
+                return count + (hasNonRest && hasActual && date <= today ? 1 : 0)
+            }
+        }
+
+        var trainingProgress: Double? {
+            let total = totalPlannedWorkouts
+            guard total > 0 else { return nil }
+            return Double(completedPlannedWorkouts) / Double(total)
+        }
+
+        var currentStreak: Int {
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            var checkDate = (workoutCounts[today] ?? 0) > 0
+                ? today
+                : calendar.date(byAdding: .day, value: -1, to: today)!
+            var streak = 0
+            while (workoutCounts[checkDate] ?? 0) > 0 {
+                streak += 1
+                checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)!
+            }
+            return streak
+        }
     }
 
     enum Action {
@@ -41,6 +77,7 @@ struct AppFeature {
         case fetchWorkouts
         case workoutsResponse([Date: Int])
         case workoutDetailsResponse([Date: [WorkoutEntry]])
+        case fetchHistoricalWorkouts
         case previousMonth
         case nextMonth
         case selectDate(Date)
@@ -87,10 +124,13 @@ struct AppFeature {
                         calendar.date(byAdding: .day, value: 1, to: today)!,
                         calendar.date(byAdding: .day, value: 1, to: raceDate)!
                     )
-                    return .run { send in
-                        let workouts = try await swiftDataClient.fetchPlannedWorkouts(startDate, endDate)
-                        await send(.plannedWorkoutsLoaded(workouts))
-                    }
+                    return .merge(
+                        .run { send in
+                            let workouts = try await swiftDataClient.fetchPlannedWorkouts(startDate, endDate)
+                            await send(.plannedWorkoutsLoaded(workouts))
+                        },
+                        .send(.fetchHistoricalWorkouts)
+                    )
                 } else {
                     state.plannedWorkouts = [:]
                 }
@@ -113,6 +153,22 @@ struct AppFeature {
                 state.displayedMonth = calendar.date(byAdding: .month, value: 1, to: state.displayedMonth)!
                 return .send(.fetchWorkouts)
 
+            case .fetchHistoricalWorkouts:
+                guard let goal = state.activeGoal else { return .none }
+                let calendar = Calendar.current
+                let today = calendar.startOfDay(for: now)
+                let startDate = calendar.startOfDay(for: goal.createdAt)
+                guard let endDate = calendar.date(byAdding: .day, value: 1, to: today) else { return .none }
+                return .run { send in
+                    async let counts = healthKitClient.fetchRunningWorkouts(startDate, endDate)
+                    async let details = healthKitClient.fetchRunningWorkoutDetails(startDate, endDate)
+                    await send(.workoutsResponse(try await counts))
+                    await send(.workoutDetailsResponse(try await details))
+                } catch: { _, send in
+                    await send(.fetchFailed)
+                }
+                .cancellable(id: "healthKitHistory", cancelInFlight: true)
+
             case .fetchWorkouts:
                 state.isLoading = true
                 let calendar = Calendar.current
@@ -133,13 +189,17 @@ struct AppFeature {
                 .cancellable(id: "healthKit")
 
             case let .workoutsResponse(counts):
-                state.workoutCounts = counts
+                for (date, count) in counts {
+                    state.workoutCounts[date] = count
+                }
                 state.isLoading = false
-                syncToWidget(goal: state.activeGoal, workoutCounts: counts, plannedWorkouts: state.plannedWorkouts)
+                syncToWidget(goal: state.activeGoal, workoutCounts: state.workoutCounts, plannedWorkouts: state.plannedWorkouts)
                 return .none
 
             case let .workoutDetailsResponse(details):
-                state.workoutDetails = details
+                for (date, entries) in details {
+                    state.workoutDetails[date] = entries
+                }
                 return .none
 
             case let .selectDate(date):
@@ -201,7 +261,7 @@ struct AppFeature {
                 }
                 state.plannedWorkouts = plannedMap
                 syncToWidget(goal: goal, workoutCounts: state.workoutCounts, plannedWorkouts: plannedMap)
-                return .none
+                return .send(.fetchHistoricalWorkouts)
 
             case .goalSetup(.presented(.delegate(.dismissed))):
                 state.goalSetup = nil

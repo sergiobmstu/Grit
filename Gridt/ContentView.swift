@@ -9,6 +9,7 @@ struct ContentView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     countdownSection
+                    progressSection
                     calendarSection
                     goalButton
                 }
@@ -73,6 +74,74 @@ struct ContentView: View {
             }
             .padding(.vertical, 8)
         }
+    }
+
+    // MARK: - Progress
+
+    @ViewBuilder
+    private var progressSection: some View {
+        if store.activeGoal != nil, let progress = store.trainingProgress {
+            VStack(spacing: 14) {
+                // Progress bar
+                VStack(spacing: 6) {
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(Color.secondary.opacity(0.2))
+                            Capsule()
+                                .fill(Color.green)
+                                .frame(width: geo.size.width * CGFloat(max(0, min(1, progress))))
+                        }
+                    }
+                    .frame(height: 10)
+
+                    HStack {
+                        Text("Start")
+                        Spacer()
+                        Text("\(Int(progress * 100))% complete")
+                        Spacer()
+                        Text("Goal")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+
+                Divider()
+
+                // Stats grid
+                HStack(spacing: 12) {
+                    statTile(icon: "scope", iconColor: .green, label: "Progress",
+                             value: "\(Int(progress * 100))%")
+                    statTile(icon: "flame.fill", iconColor: .orange, label: "Streak",
+                             value: "\(store.currentStreak) days")
+                }
+                HStack(spacing: 12) {
+                    statTile(icon: "calendar", iconColor: .secondary, label: "Remaining",
+                             value: "\(store.daysRemaining ?? 0) days")
+                    statTile(icon: "chart.line.uptrend.xyaxis", iconColor: .green, label: "Completed",
+                             value: "\(store.completedPlannedWorkouts)/\(store.totalPlannedWorkouts)")
+                }
+            }
+            .padding()
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+        }
+    }
+
+    private func statTile(icon: String, iconColor: Color, label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .foregroundStyle(iconColor)
+                Text(label)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            Text(value)
+                .font(.title3.bold())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
     }
 
     // MARK: - Calendar
