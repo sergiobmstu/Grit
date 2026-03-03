@@ -113,7 +113,7 @@ struct GridtWidgetEntryView: View {
                     .foregroundStyle(.green)
             }
             Spacer()
-            MiniCalendarView(workoutCounts: entry.workoutCounts, dayCount: 30)
+            MiniCalendarView(workoutCounts: entry.workoutCounts)
         }
     }
 
@@ -148,16 +148,15 @@ struct GridtWidgetEntryView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            MiniCalendarView(workoutCounts: entry.workoutCounts, dayCount: 30)
+            MiniCalendarView(workoutCounts: entry.workoutCounts)
         }
     }
 }
 
-// MARK: - Mini Calendar (compact version for widgets)
+// MARK: - Mini Calendar (compact month view for widgets)
 
 struct MiniCalendarView: View {
     let workoutCounts: [Date: Int]
-    let dayCount: Int
 
     private let calendar = Calendar.current
     private let spacing: CGFloat = 2
@@ -171,17 +170,18 @@ struct MiniCalendarView: View {
     ]
 
     var body: some View {
-        let today = calendar.startOfDay(for: Date())
-        let grid = buildGrid(endDate: today)
+        let cells = buildMonthCells()
+        let rows = stride(from: 0, to: cells.count, by: 7).map {
+            Array(cells[$0..<min($0 + 7, cells.count)])
+        }
 
-        HStack(spacing: spacing) {
-            ForEach(0..<grid.count, id: \.self) { weekIndex in
-                VStack(spacing: spacing) {
-                    ForEach(0..<7, id: \.self) { dayIndex in
-                        let cell = grid[weekIndex][dayIndex]
+        VStack(spacing: spacing) {
+            ForEach(0..<rows.count, id: \.self) { row in
+                HStack(spacing: spacing) {
+                    ForEach(0..<rows[row].count, id: \.self) { col in
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(colorFor(cell))
-                            .frame(width: 8, height: 8)
+                            .fill(colorFor(rows[row][col]))
+                            .frame(width: 9, height: 9)
                     }
                 }
             }
@@ -190,28 +190,22 @@ struct MiniCalendarView: View {
 
     private func colorFor(_ cell: MiniDayCell) -> Color {
         switch cell {
-        case .empty:
-            return .clear
-        case let .day(_, count):
-            return colors[min(count, colors.count - 1)]
+        case .empty: return .clear
+        case let .day(_, count): return colors[min(count, colors.count - 1)]
         }
     }
 
-    private func buildGrid(endDate: Date) -> [[MiniDayCell]] {
-        let startDate = calendar.date(byAdding: .day, value: -(dayCount - 1), to: endDate)!
+    private func buildMonthCells() -> [MiniDayCell] {
+        let today = calendar.startOfDay(for: Date())
+        let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: today))!
+        let daysInMonth = calendar.range(of: .day, in: .month, for: monthStart)!.count
 
-        var allDays: [Date] = []
-        var d = startDate
-        while d <= endDate {
-            allDays.append(d)
-            d = calendar.date(byAdding: .day, value: 1, to: d)!
-        }
+        let wd = calendar.component(.weekday, from: monthStart)
+        let leadingEmpties = wd == 1 ? 6 : wd - 2
+        var cells: [MiniDayCell] = Array(repeating: .empty, count: leadingEmpties)
 
-        let wd = calendar.component(.weekday, from: startDate)
-        let startDOW = wd == 1 ? 6 : wd - 2
-        var cells: [MiniDayCell] = Array(repeating: .empty, count: startDOW)
-
-        for date in allDays {
+        for day in 1...daysInMonth {
+            let date = calendar.date(byAdding: .day, value: day - 1, to: monthStart)!
             cells.append(.day(date: date, count: workoutCounts[date] ?? 0))
         }
 
@@ -220,16 +214,7 @@ struct MiniCalendarView: View {
             cells.append(contentsOf: Array(repeating: MiniDayCell.empty, count: 7 - remainder))
         }
 
-        let weekCount = cells.count / 7
-        var weeks: [[MiniDayCell]] = []
-        for w in 0..<weekCount {
-            var week: [MiniDayCell] = []
-            for day in 0..<7 {
-                week.append(cells[w * 7 + day])
-            }
-            weeks.append(week)
-        }
-        return weeks
+        return cells
     }
 }
 

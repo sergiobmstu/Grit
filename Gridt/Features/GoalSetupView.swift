@@ -116,9 +116,38 @@ struct GoalSetupView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            TextField("e.g., 3:30:00 or 25:00", text: $store.targetTimeText)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.numbersAndPunctuation)
+            HStack(spacing: 12) {
+                // Hours
+                VStack(spacing: 4) {
+                    Picker("Hours", selection: $store.targetTimeHours) {
+                        ForEach(0..<24) { hour in
+                            Text("\(hour)").tag(hour)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(maxWidth: .infinity)
+                    
+                    Text("hours")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                
+                // Minutes
+                VStack(spacing: 4) {
+                    Picker("Minutes", selection: $store.targetTimeMinutes) {
+                        ForEach(0..<60) { minute in
+                            Text("\(minute)").tag(minute)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(maxWidth: .infinity)
+                    
+                    Text("min")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(height: 150)
         }
     }
 

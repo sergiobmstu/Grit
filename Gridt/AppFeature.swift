@@ -16,6 +16,10 @@ struct AppFeature {
         var workoutDetails: [Date: [WorkoutEntry]] = [:]
         var selectedDate: Date?
         var isLoading = false
+        var displayedMonth: Date = {
+            let cal = Calendar.current
+            return cal.date(from: cal.dateComponents([.year, .month], from: Date()))!
+        }()
         @Presents var goalSetup: GoalSetupFeature.State?
 
         var daysRemaining: Int? {
@@ -37,6 +41,8 @@ struct AppFeature {
         case fetchWorkouts
         case workoutsResponse([Date: Int])
         case workoutDetailsResponse([Date: [WorkoutEntry]])
+        case previousMonth
+        case nextMonth
         case selectDate(Date)
         case dismissDetail
         case fetchFailed
@@ -75,7 +81,7 @@ struct AppFeature {
                     // Load planned workouts for calendar range
                     let calendar = Calendar.current
                     let today = calendar.startOfDay(for: now)
-                    let startDate = calendar.date(byAdding: .day, value: -29, to: today)!
+                    let startDate = calendar.date(byAdding: .month, value: -12, to: today)!
                     let raceDate = goal.raceDate
                     let endDate = max(
                         calendar.date(byAdding: .day, value: 1, to: today)!,
@@ -97,14 +103,25 @@ struct AppFeature {
                 syncToWidget(goal: state.activeGoal, workoutCounts: state.workoutCounts, plannedWorkouts: workouts)
                 return .none
 
+            case .previousMonth:
+                let calendar = Calendar.current
+                state.displayedMonth = calendar.date(byAdding: .month, value: -1, to: state.displayedMonth)!
+                return .send(.fetchWorkouts)
+
+            case .nextMonth:
+                let calendar = Calendar.current
+                state.displayedMonth = calendar.date(byAdding: .month, value: 1, to: state.displayedMonth)!
+                return .send(.fetchWorkouts)
+
             case .fetchWorkouts:
                 state.isLoading = true
                 let calendar = Calendar.current
-                let today = calendar.startOfDay(for: now)
-                guard let startDate = calendar.date(byAdding: .day, value: -29, to: today),
-                      let endDate = calendar.date(byAdding: .day, value: 1, to: today) else {
+                let monthStart = state.displayedMonth
+                guard let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) else {
                     return .none
                 }
+                let startDate = monthStart
+                let endDate = monthEnd
                 return .run { send in
                     async let counts = healthKitClient.fetchRunningWorkouts(startDate, endDate)
                     async let details = healthKitClient.fetchRunningWorkoutDetails(startDate, endDate)
@@ -139,10 +156,12 @@ struct AppFeature {
 
             case .setGoalTapped:
                 if let goal = state.activeGoal {
+                    let (hours, minutes) = secondsToTimeComponents(goal.targetTimeSeconds)
                     state.goalSetup = GoalSetupFeature.State(
                         raceDistance: goal.raceDistance,
                         raceDate: goal.raceDate,
-                        targetTimeText: goal.targetTimeFormatted ?? "",
+                        targetTimeHours: hours,
+                        targetTimeMinutes: minutes,
                         fitnessDescription: goal.fitnessDescription,
                         trainingDaysPerWeek: goal.trainingDaysPerWeek,
                         preferredWeekdays: goal.preferredWeekdays,
@@ -243,4 +262,16 @@ private func syncToWidget(goal: GoalSnapshot?, workoutCounts: [Date: Int], plann
     }
 
     WidgetCenter.shared.reloadAllTimelines()
+}
+
+// MARK: - Helper Functions
+
+private func secondsToTimeComponents(_ seconds: Double?) -> (hours: Int, minutes: Int) {
+    guard let seconds = seconds, seconds > 0 else { return (0, 0) }
+    
+    let totalSeconds = Int(seconds)
+    let hours = totalSeconds / 3600
+    let minutes = (totalSeconds % 3600) / 60
+    
+    return (hours, minutes)
 }

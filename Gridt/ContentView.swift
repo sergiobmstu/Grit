@@ -78,23 +78,19 @@ struct ContentView: View {
     // MARK: - Calendar
 
     private var calendarSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Last 30 Days")
-                    .font(.headline)
-                Spacer()
-                if store.isLoading {
-                    ProgressView()
-                }
+        VStack(spacing: 8) {
+            if store.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             }
 
             ContributionCalendarView(
+                month: store.displayedMonth,
                 workoutCounts: store.workoutCounts,
                 plannedWorkouts: store.plannedWorkouts,
-                dayCount: 30,
-                onDayTapped: { date in
-                    store.send(.selectDate(date))
-                }
+                onDayTapped: { store.send(.selectDate($0)) },
+                onPreviousMonth: { store.send(.previousMonth) },
+                onNextMonth: { store.send(.nextMonth) }
             )
         }
         .padding()

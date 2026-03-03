@@ -7,7 +7,8 @@ struct GoalSetupFeature {
     struct State: Equatable {
         var raceDistance: RaceDistance = .halfMarathon
         var raceDate: Date = Calendar.current.date(byAdding: .month, value: 3, to: Date()) ?? Date()
-        var targetTimeText: String = ""
+        var targetTimeHours: Int = 0
+        var targetTimeMinutes: Int = 0
         var fitnessDescription: String = ""
         var trainingDaysPerWeek: Int = 4
         var preferredWeekdays: Set<Weekday> = []
@@ -16,6 +17,11 @@ struct GoalSetupFeature {
         var isGenerating = false
         var existingGoalId: UUID?
         var errorMessage: String?
+        
+        var targetTimeInSeconds: Double? {
+            let total = targetTimeHours * 3600 + targetTimeMinutes * 60
+            return total > 0 ? Double(total) : nil
+        }
 
         var isValid: Bool {
             let calendar = Calendar.current
@@ -85,7 +91,7 @@ struct GoalSetupFeature {
                 state.errorMessage = nil
 
                 let goalId = state.existingGoalId ?? UUID()
-                let targetTime = parseTimeString(state.targetTimeText)
+                let targetTime = state.targetTimeInSeconds
 
                 let goal = GoalSnapshot(
                     id: goalId,
@@ -125,21 +131,4 @@ struct GoalSetupFeature {
     }
 }
 
-// MARK: - Time Parsing
 
-private func parseTimeString(_ text: String) -> Double? {
-    let trimmed = text.trimmingCharacters(in: .whitespaces)
-    guard !trimmed.isEmpty else { return nil }
-
-    let parts = trimmed.split(separator: ":").compactMap { Double($0) }
-    switch parts.count {
-    case 1:
-        return parts[0] * 60 // Assume minutes
-    case 2:
-        return parts[0] * 60 + parts[1] // mm:ss
-    case 3:
-        return parts[0] * 3600 + parts[1] * 60 + parts[2] // h:mm:ss
-    default:
-        return nil
-    }
-}
