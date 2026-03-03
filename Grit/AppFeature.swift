@@ -9,53 +9,93 @@ private let sharedDefaults = UserDefaults(suiteName: appGroupID)
 struct AppFeature {
     @ObservableState
     struct State: Equatable {
-        var goalDate: Date?
+        var activeGoal: GoalSnapshot?
+        var trainingPlan: TrainingPlanSnapshot?
+        var plannedWorkouts: [Date: [PlannedWorkoutSnapshot]] = [:]
         var workoutCounts: [Date: Int] = [:]
         var workoutDetails: [Date: [WorkoutEntry]] = [:]
         var selectedDate: Date?
-        var isDatePickerPresented = false
         var isLoading = false
+        @Presents var goalSetup: GoalSetupFeature.State?
 
         var daysRemaining: Int? {
-            guard let goalDate else { return nil }
+            guard let goal = activeGoal else { return nil }
             let calendar = Calendar.current
             let today = calendar.startOfDay(for: Date())
-            let goal = calendar.startOfDay(for: goalDate)
-            let days = calendar.dateComponents([.day], from: today, to: goal).day ?? 0
+            let raceDay = calendar.startOfDay(for: goal.raceDate)
+            let days = calendar.dateComponents([.day], from: today, to: raceDay).day ?? 0
             return max(0, days)
         }
     }
 
     enum Action {
         case onAppear
-        case setGoalDate(Date)
-        case removeGoal
-        case setDatePickerPresented(Bool)
+        case goalLoaded(GoalSnapshot?, TrainingPlanSnapshot?)
+        case plannedWorkoutsLoaded([Date: [PlannedWorkoutSnapshot]])
+        case setGoalTapped
+        case removeGoalTapped
         case fetchWorkouts
         case workoutsResponse([Date: Int])
         case workoutDetailsResponse([Date: [WorkoutEntry]])
         case selectDate(Date)
         case dismissDetail
         case fetchFailed
+        case goalSetup(PresentationAction<GoalSetupFeature.Action>)
     }
 
     @Dependency(\.healthKitClient) var healthKitClient
+    @Dependency(\.swiftDataClient) var swiftDataClient
     @Dependency(\.date.now) var now
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                if let interval = sharedDefaults?.object(forKey: "goalDate") as? Double {
-                    state.goalDate = Date(timeIntervalSince1970: interval)
-                }
                 state.isLoading = true
                 return .run { send in
                     try await healthKitClient.requestAuthorization()
+
+                    // Load goal from SwiftData
+                    let goal = try await swiftDataClient.fetchActiveGoal()
+                    var plan: TrainingPlanSnapshot?
+                    if let goal {
+                        plan = try await swiftDataClient.fetchTrainingPlan(goal.id)
+                    }
+                    await send(.goalLoaded(goal, plan))
                     await send(.fetchWorkouts)
                 } catch: { _, send in
                     await send(.fetchFailed)
                 }
+
+            case let .goalLoaded(goal, plan):
+                state.activeGoal = goal
+                state.trainingPlan = plan
+
+                if let goal {
+                    // Load planned workouts for calendar range
+                    let calendar = Calendar.current
+                    let today = calendar.startOfDay(for: now)
+                    let startDate = calendar.date(byAdding: .day, value: -29, to: today)!
+                    let raceDate = goal.raceDate
+                    let endDate = max(
+                        calendar.date(byAdding: .day, value: 1, to: today)!,
+                        calendar.date(byAdding: .day, value: 1, to: raceDate)!
+                    )
+                    return .run { send in
+                        let workouts = try await swiftDataClient.fetchPlannedWorkouts(startDate, endDate)
+                        await send(.plannedWorkoutsLoaded(workouts))
+                    }
+                } else {
+                    state.plannedWorkouts = [:]
+                }
+
+                syncToWidget(goal: state.activeGoal, workoutCounts: state.workoutCounts, plannedWorkouts: state.plannedWorkouts)
+                return .none
+
+            case let .plannedWorkoutsLoaded(workouts):
+                state.plannedWorkouts = workouts
+                syncToWidget(goal: state.activeGoal, workoutCounts: state.workoutCounts, plannedWorkouts: workouts)
+                return .none
 
             case .fetchWorkouts:
                 state.isLoading = true
@@ -66,8 +106,8 @@ struct AppFeature {
                     return .none
                 }
                 return .run { send in
-                    async let counts = healthKitClient.fetchWorkouts(startDate, endDate)
-                    async let details = healthKitClient.fetchWorkoutDetails(startDate, endDate)
+                    async let counts = healthKitClient.fetchRunningWorkouts(startDate, endDate)
+                    async let details = healthKitClient.fetchRunningWorkoutDetails(startDate, endDate)
                     await send(.workoutsResponse(try await counts))
                     await send(.workoutDetailsResponse(try await details))
                 } catch: { _, send in
@@ -78,7 +118,7 @@ struct AppFeature {
             case let .workoutsResponse(counts):
                 state.workoutCounts = counts
                 state.isLoading = false
-                syncToWidget(goalDate: state.goalDate, workoutCounts: counts)
+                syncToWidget(goal: state.activeGoal, workoutCounts: counts, plannedWorkouts: state.plannedWorkouts)
                 return .none
 
             case let .workoutDetailsResponse(details):
@@ -97,46 +137,109 @@ struct AppFeature {
                 state.isLoading = false
                 return .none
 
-            case let .setGoalDate(date):
-                state.goalDate = date
-                state.isDatePickerPresented = false
-                sharedDefaults?.set(date.timeIntervalSince1970, forKey: "goalDate")
-                syncToWidget(goalDate: date, workoutCounts: state.workoutCounts)
+            case .setGoalTapped:
+                if let goal = state.activeGoal {
+                    state.goalSetup = GoalSetupFeature.State(
+                        raceDistance: goal.raceDistance,
+                        raceDate: goal.raceDate,
+                        targetTimeText: goal.targetTimeFormatted ?? "",
+                        fitnessDescription: goal.fitnessDescription,
+                        trainingDaysPerWeek: goal.trainingDaysPerWeek,
+                        preferredWeekdays: goal.preferredWeekdays,
+                        blockedWeekdays: goal.blockedWeekdays,
+                        selectedPlanType: goal.planType,
+                        existingGoalId: goal.id
+                    )
+                } else {
+                    state.goalSetup = GoalSetupFeature.State()
+                }
                 return .none
 
-            case .removeGoal:
-                state.goalDate = nil
-                sharedDefaults?.removeObject(forKey: "goalDate")
-                syncToWidget(goalDate: nil, workoutCounts: state.workoutCounts)
+            case .removeGoalTapped:
+                let goalId = state.activeGoal?.id
+                state.activeGoal = nil
+                state.trainingPlan = nil
+                state.plannedWorkouts = [:]
+                syncToWidget(goal: nil, workoutCounts: state.workoutCounts, plannedWorkouts: [:])
+                if let goalId {
+                    return .run { _ in
+                        try await swiftDataClient.deleteGoal(goalId)
+                    }
+                }
                 return .none
 
-            case let .setDatePickerPresented(presented):
-                state.isDatePickerPresented = presented
+            case .goalSetup(.presented(.delegate(.goalCreated(let goal, let plan)))):
+                state.activeGoal = goal
+                state.trainingPlan = plan
+                state.goalSetup = nil
+
+                // Build planned workouts map
+                var plannedMap: [Date: [PlannedWorkoutSnapshot]] = [:]
+                let calendar = Calendar.current
+                for workout in plan.workouts {
+                    let day = calendar.startOfDay(for: workout.date)
+                    plannedMap[day, default: []].append(workout)
+                }
+                state.plannedWorkouts = plannedMap
+                syncToWidget(goal: goal, workoutCounts: state.workoutCounts, plannedWorkouts: plannedMap)
+                return .none
+
+            case .goalSetup(.presented(.delegate(.dismissed))):
+                state.goalSetup = nil
+                return .none
+
+            case .goalSetup:
                 return .none
             }
+        }
+        .ifLet(\.$goalSetup, action: \.goalSetup) {
+            GoalSetupFeature()
         }
     }
 }
 
 // MARK: - Widget Sync
 
-private func syncToWidget(goalDate: Date?, workoutCounts: [Date: Int]) {
-    // Encode workout counts with string keys for JSON compatibility
+private func syncToWidget(goal: GoalSnapshot?, workoutCounts: [Date: Int], plannedWorkouts: [Date: [PlannedWorkoutSnapshot]]) {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd"
     formatter.timeZone = .current
 
-    var encoded: [String: Int] = [:]
+    // Encode workout counts
+    var encodedCounts: [String: Int] = [:]
     for (date, count) in workoutCounts {
-        encoded[formatter.string(from: date)] = count
+        encodedCounts[formatter.string(from: date)] = count
     }
-
-    if let data = try? JSONEncoder().encode(encoded) {
+    if let data = try? JSONEncoder().encode(encodedCounts) {
         sharedDefaults?.set(data, forKey: "workoutCounts")
     }
 
-    if let goalDate {
-        sharedDefaults?.set(goalDate.timeIntervalSince1970, forKey: "goalDate")
+    // Encode planned workout counts for next 30 days
+    var encodedPlanned: [String: Int] = [:]
+    for (date, workouts) in plannedWorkouts {
+        let nonRestWorkouts = workouts.filter { $0.workoutType != .restDay }
+        if !nonRestWorkouts.isEmpty {
+            encodedPlanned[formatter.string(from: date)] = nonRestWorkouts.count
+        }
+    }
+    if let data = try? JSONEncoder().encode(encodedPlanned) {
+        sharedDefaults?.set(data, forKey: "plannedWorkoutCounts")
+    }
+
+    // Goal fields
+    if let goal {
+        sharedDefaults?.set(goal.raceDate.timeIntervalSince1970, forKey: "goalDate")
+        sharedDefaults?.set(goal.raceDistance.rawValue, forKey: "raceDistance")
+        if let targetTime = goal.targetTimeSeconds {
+            sharedDefaults?.set(targetTime, forKey: "targetTime")
+        } else {
+            sharedDefaults?.removeObject(forKey: "targetTime")
+        }
+    } else {
+        sharedDefaults?.removeObject(forKey: "goalDate")
+        sharedDefaults?.removeObject(forKey: "raceDistance")
+        sharedDefaults?.removeObject(forKey: "targetTime")
+        sharedDefaults?.removeObject(forKey: "plannedWorkoutCounts")
     }
 
     WidgetCenter.shared.reloadAllTimelines()

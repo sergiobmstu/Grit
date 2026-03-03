@@ -1,21 +1,35 @@
 import SwiftUI
 
+// MARK: - Day Status
+
+enum DayStatus: Hashable {
+    case noData
+    case planned
+    case completed(count: Int)
+    case missed
+}
+
 struct ContributionCalendarView: View {
     let workoutCounts: [Date: Int]
+    let plannedWorkouts: [Date: [PlannedWorkoutSnapshot]]
     let dayCount: Int
     var onDayTapped: ((Date) -> Void)?
+
+    init(
+        workoutCounts: [Date: Int],
+        plannedWorkouts: [Date: [PlannedWorkoutSnapshot]] = [:],
+        dayCount: Int,
+        onDayTapped: ((Date) -> Void)? = nil
+    ) {
+        self.workoutCounts = workoutCounts
+        self.plannedWorkouts = plannedWorkouts
+        self.dayCount = dayCount
+        self.onDayTapped = onDayTapped
+    }
 
     private let calendar = Calendar.current
     private let spacing: CGFloat = 4
     private let dayLabelWidth: CGFloat = 28
-
-    private let levelColors: [Color] = [
-        Color.secondary.opacity(0.2),
-        Color.green.opacity(0.3),
-        Color.green.opacity(0.5),
-        Color.green.opacity(0.75),
-        Color.green,
-    ]
 
     var body: some View {
         let today = calendar.startOfDay(for: Date())
@@ -23,18 +37,16 @@ struct ContributionCalendarView: View {
 
         VStack(alignment: .leading, spacing: 6) {
             monthLabelsRow(grid: grid, cellSize: cellSize(for: grid))
-            gridView(grid: grid)
+            gridView(grid: grid, today: today)
             legendRow()
         }
     }
 
     // MARK: - Grid Computation
 
-    /// Each inner array = one week (column), containing 7 DayCell values (Mon–Sun).
     private func buildGrid(endDate: Date) -> [[DayCell]] {
         let startDate = calendar.date(byAdding: .day, value: -(dayCount - 1), to: endDate)!
 
-        // Build flat list of all days in range
         var allDays: [Date] = []
         var d = startDate
         while d <= endDate {
@@ -42,7 +54,6 @@ struct ContributionCalendarView: View {
             d = calendar.date(byAdding: .day, value: 1, to: d)!
         }
 
-        // Pad start to align to Monday (dayOfWeek: Mon=0 ... Sun=6)
         let startDOW = mondayBasedWeekday(startDate)
         var cells: [DayCell] = Array(repeating: .empty, count: startDOW)
 
@@ -51,13 +62,11 @@ struct ContributionCalendarView: View {
             cells.append(.day(date: date, count: count))
         }
 
-        // Pad end to complete last week
         let remainder = cells.count % 7
         if remainder != 0 {
             cells.append(contentsOf: Array(repeating: DayCell.empty, count: 7 - remainder))
         }
 
-        // Reshape into weeks (each week = 7 consecutive cells)
         let weekCount = cells.count / 7
         var weeks: [[DayCell]] = []
         for w in 0..<weekCount {
@@ -70,27 +79,57 @@ struct ContributionCalendarView: View {
         return weeks
     }
 
-    /// Monday = 0, Tuesday = 1, ... Sunday = 6
     private func mondayBasedWeekday(_ date: Date) -> Int {
-        let wd = calendar.component(.weekday, from: date) // Sun=1, Mon=2, ..., Sat=7
+        let wd = calendar.component(.weekday, from: date)
         return wd == 1 ? 6 : wd - 2
+    }
+
+    private func dayStatus(for date: Date, count: Int, today: Date) -> DayStatus {
+        let hasPlanned = plannedWorkouts[date]?.contains(where: { $0.workoutType != .restDay }) ?? false
+        let hasActual = count > 0
+
+        if date > today && hasPlanned {
+            return .planned
+        } else if date <= today && hasPlanned && hasActual {
+            return .completed(count: count)
+        } else if date <= today && hasPlanned && !hasActual {
+            return .missed
+        } else if date <= today && !hasPlanned && hasActual {
+            return .completed(count: count)
+        }
+        return .noData
+    }
+
+    private func colorForStatus(_ status: DayStatus) -> Color {
+        switch status {
+        case .noData:
+            return Color.secondary.opacity(0.2)
+        case .planned:
+            return Color.gray.opacity(0.4)
+        case .completed(let count):
+            switch count {
+            case 1: return Color.green.opacity(0.4)
+            case 2: return Color.green.opacity(0.5)
+            case 3: return Color.green.opacity(0.75)
+            default: return Color.green
+            }
+        case .missed:
+            return Color.red.opacity(0.5)
+        }
     }
 
     // MARK: - Subviews
 
     private func cellSize(for grid: [[DayCell]]) -> CGFloat {
-        // Use a reasonable fixed size; the grid won't be too wide for 30 days (~5 cols)
         36
     }
 
-    private func gridView(grid: [[DayCell]]) -> some View {
+    private func gridView(grid: [[DayCell]], today: Date) -> some View {
         let size = cellSize(for: grid)
         return HStack(alignment: .top, spacing: spacing) {
-            // Day-of-week labels
             VStack(spacing: spacing) {
                 ForEach(0..<7, id: \.self) { row in
                     if row == 0 || row == 2 || row == 4 {
-                        // Mon, Wed, Fri
                         Text(dayLabel(row))
                             .font(.system(size: 10))
                             .foregroundStyle(.secondary)
@@ -101,11 +140,10 @@ struct ContributionCalendarView: View {
                 }
             }
 
-            // Week columns
             ForEach(0..<grid.count, id: \.self) { weekIndex in
                 VStack(spacing: spacing) {
                     ForEach(0..<7, id: \.self) { dayIndex in
-                        cellView(grid[weekIndex][dayIndex], size: size)
+                        cellView(grid[weekIndex][dayIndex], size: size, today: today)
                     }
                 }
             }
@@ -113,17 +151,18 @@ struct ContributionCalendarView: View {
     }
 
     @ViewBuilder
-    private func cellView(_ cell: DayCell, size: CGFloat) -> some View {
+    private func cellView(_ cell: DayCell, size: CGFloat, today: Date) -> some View {
         switch cell {
         case .empty:
             Color.clear
                 .frame(width: size, height: size)
-        case let .day(date, _):
+        case let .day(date, count):
+            let status = dayStatus(for: date, count: count, today: today)
             Button {
                 onDayTapped?(date)
             } label: {
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(color(for: cell))
+                    .fill(colorForStatus(status))
                     .frame(width: size, height: size)
             }
             .buttonStyle(.plain)
@@ -151,45 +190,35 @@ struct ContributionCalendarView: View {
     }
 
     private func legendRow() -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 8) {
             Spacer()
-            Text("Less")
+            legendItem(color: .green, label: "Done")
+            legendItem(color: .gray.opacity(0.4), label: "Planned")
+            legendItem(color: .red.opacity(0.5), label: "Missed")
+            Spacer()
+        }
+    }
+
+    private func legendItem(color: Color, label: String) -> some View {
+        HStack(spacing: 3) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(color)
+                .frame(width: 14, height: 14)
+            Text(label)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-            ForEach(0..<levelColors.count, id: \.self) { level in
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(levelColors[level])
-                    .frame(width: 14, height: 14)
-            }
-            Text("More")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            Spacer()
         }
     }
 
     // MARK: - Helpers
 
-    private func color(for cell: DayCell) -> Color {
-        switch cell {
-        case .empty:
-            return .clear
-        case let .day(_, count):
-            let level = min(count, levelColors.count - 1)
-            return levelColors[level]
-        }
-    }
-
     private func dayLabel(_ mondayIndex: Int) -> String {
-        // shortWeekdaySymbols: [Sun, Mon, Tue, Wed, Thu, Fri, Sat] (indices 0–6)
-        // mondayIndex: Mon=0, Tue=1, ..., Sat=5, Sun=6
         let symbols = calendar.shortWeekdaySymbols
         let idx = mondayIndex == 6 ? 0 : mondayIndex + 1
         return symbols[idx]
     }
 
     private func monthLabel(for weekIndex: Int, in grid: [[DayCell]]) -> String? {
-        // Find first actual day in this week
         guard let firstDay = grid[weekIndex].compactMap({ $0.date }).first else { return nil }
         let month = calendar.component(.month, from: firstDay)
 
@@ -197,7 +226,6 @@ struct ContributionCalendarView: View {
             return calendar.shortMonthSymbols[month - 1]
         }
 
-        // Check previous week's first day
         guard let prevFirstDay = grid[weekIndex - 1].compactMap({ $0.date }).first else {
             return calendar.shortMonthSymbols[month - 1]
         }

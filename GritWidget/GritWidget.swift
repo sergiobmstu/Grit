@@ -11,6 +11,7 @@ struct GritWidgetEntry: TimelineEntry {
     let date: Date
     let daysRemaining: Int?
     let goalDate: Date?
+    let raceDistance: String?
     let workoutCounts: [Date: Int]
 }
 
@@ -18,7 +19,7 @@ struct GritWidgetEntry: TimelineEntry {
 
 struct GritWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> GritWidgetEntry {
-        GritWidgetEntry(date: Date(), daysRemaining: 42, goalDate: nil, workoutCounts: [:])
+        GritWidgetEntry(date: Date(), daysRemaining: 42, goalDate: nil, raceDistance: "42K", workoutCounts: [:])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GritWidgetEntry) -> Void) {
@@ -41,6 +42,8 @@ struct GritWidgetProvider: TimelineProvider {
         if let interval = defaults?.object(forKey: "goalDate") as? Double {
             goalDate = Date(timeIntervalSince1970: interval)
         }
+
+        let raceDistance = defaults?.string(forKey: "raceDistance")
 
         var workoutCounts: [Date: Int] = [:]
         if let data = defaults?.data(forKey: "workoutCounts"),
@@ -67,6 +70,7 @@ struct GritWidgetProvider: TimelineProvider {
             date: Date(),
             daysRemaining: daysRemaining,
             goalDate: goalDate,
+            raceDistance: raceDistance,
             workoutCounts: workoutCounts
         )
     }
@@ -90,9 +94,16 @@ struct GritWidgetEntryView: View {
     private var smallView: some View {
         VStack(alignment: .leading, spacing: 6) {
             if let days = entry.daysRemaining {
-                Text("\(days)")
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundStyle(.green)
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text("\(days)")
+                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .foregroundStyle(.green)
+                    if let distance = entry.raceDistance {
+                        Text(distance)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.green.opacity(0.8))
+                    }
+                }
                 Text("days left")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -110,9 +121,16 @@ struct GritWidgetEntryView: View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 if let days = entry.daysRemaining {
-                    Text("\(days)")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .foregroundStyle(.green)
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text("\(days)")
+                            .font(.system(size: 44, weight: .bold, design: .rounded))
+                            .foregroundStyle(.green)
+                        if let distance = entry.raceDistance {
+                            Text(distance)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.green.opacity(0.8))
+                        }
+                    }
                     Text("days left")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -231,7 +249,7 @@ struct GritWidget: Widget {
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Grit")
-        .description("Track your workout streak and goal countdown.")
+        .description("Track your running streak and goal countdown.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
