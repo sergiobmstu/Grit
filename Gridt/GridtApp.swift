@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 @main
-struct GritApp: App {
+struct GridtApp: App {
     let store: StoreOf<AppFeature>
 
     init() {

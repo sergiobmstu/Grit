@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C638641C2F4656E10024A0DF /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C638641B2F4656E10024A0DF /* ComposableArchitecture */; };
-		C638643A2F4658000024A0DF /* GritWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C63864302F4658000024A0DF /* GritWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C638643A2F4658000024A0DF /* GridtWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C63864302F4658000024A0DF /* GridtWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -17,7 +17,7 @@
 			containerPortal = C63864042F46566C0024A0DF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C63864352F4658000024A0DF;
-			remoteInfo = GritWidgetExtension;
+			remoteInfo = GridtWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -28,7 +28,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C638643A2F4658000024A0DF /* GritWidgetExtension.appex in Embed App Extensions */,
+				C638643A2F4658000024A0DF /* GridtWidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -36,32 +36,32 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C638640C2F46566C0024A0DF /* Grit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Grit.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C63864302F4658000024A0DF /* GritWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GritWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C638640C2F46566C0024A0DF /* Gridt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gridt.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C63864302F4658000024A0DF /* GridtWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GridtWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C638643D2F4658000024A0DF /* Exceptions for "GritWidget" folder in "GritWidgetExtension" target */ = {
+		C638643D2F4658000024A0DF /* Exceptions for "GridtWidget" folder in "GridtWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = C63864352F4658000024A0DF /* GritWidgetExtension */;
+			target = C63864352F4658000024A0DF /* GridtWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C638640E2F46566C0024A0DF /* Grit */ = {
+		C638640E2F46566C0024A0DF /* Gridt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Grit;
+			path = Gridt;
 			sourceTree = "<group>";
 		};
-		C63864312F4658000024A0DF /* GritWidget */ = {
+		C63864312F4658000024A0DF /* GridtWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C638643D2F4658000024A0DF /* Exceptions for "GritWidget" folder in "GritWidgetExtension" target */,
+				C638643D2F4658000024A0DF /* Exceptions for "GridtWidget" folder in "GridtWidgetExtension" target */,
 			);
-			path = GritWidget;
+			path = GridtWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -88,8 +88,8 @@
 		C63864032F46566C0024A0DF = {
 			isa = PBXGroup;
 			children = (
-				C638640E2F46566C0024A0DF /* Grit */,
-				C63864312F4658000024A0DF /* GritWidget */,
+				C638640E2F46566C0024A0DF /* Gridt */,
+				C63864312F4658000024A0DF /* GridtWidget */,
 				C638640D2F46566C0024A0DF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,8 +97,8 @@
 		C638640D2F46566C0024A0DF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C638640C2F46566C0024A0DF /* Grit.app */,
-				C63864302F4658000024A0DF /* GritWidgetExtension.appex */,
+				C638640C2F46566C0024A0DF /* Gridt.app */,
+				C63864302F4658000024A0DF /* GridtWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,9 +106,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C638640B2F46566C0024A0DF /* Grit */ = {
+		C638640B2F46566C0024A0DF /* Gridt */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C63864172F46566E0024A0DF /* Build configuration list for PBXNativeTarget "Grit" */;
+			buildConfigurationList = C63864172F46566E0024A0DF /* Build configuration list for PBXNativeTarget "Gridt" */;
 			buildPhases = (
 				C63864082F46566C0024A0DF /* Sources */,
 				C63864092F46566C0024A0DF /* Frameworks */,
@@ -121,19 +121,19 @@
 				C638643C2F4658000024A0DF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				C638640E2F46566C0024A0DF /* Grit */,
+				C638640E2F46566C0024A0DF /* Gridt */,
 			);
-			name = Grit;
+			name = Gridt;
 			packageProductDependencies = (
 				C638641B2F4656E10024A0DF /* ComposableArchitecture */,
 			);
-			productName = Grit;
-			productReference = C638640C2F46566C0024A0DF /* Grit.app */;
+			productName = Gridt;
+			productReference = C638640C2F46566C0024A0DF /* Gridt.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C63864352F4658000024A0DF /* GritWidgetExtension */ = {
+		C63864352F4658000024A0DF /* GridtWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GritWidgetExtension" */;
+			buildConfigurationList = C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GridtWidgetExtension" */;
 			buildPhases = (
 				C63864322F4658000024A0DF /* Sources */,
 				C63864332F4658000024A0DF /* Frameworks */,
@@ -144,11 +144,11 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C63864312F4658000024A0DF /* GritWidget */,
+				C63864312F4658000024A0DF /* GridtWidget */,
 			);
-			name = GritWidgetExtension;
-			productName = GritWidgetExtension;
-			productReference = C63864302F4658000024A0DF /* GritWidgetExtension.appex */;
+			name = GridtWidgetExtension;
+			productName = GridtWidgetExtension;
+			productReference = C63864302F4658000024A0DF /* GridtWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -169,7 +169,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C63864072F46566C0024A0DF /* Build configuration list for PBXProject "Grit" */;
+			buildConfigurationList = C63864072F46566C0024A0DF /* Build configuration list for PBXProject "Gridt" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -186,8 +186,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C638640B2F46566C0024A0DF /* Grit */,
-				C63864352F4658000024A0DF /* GritWidgetExtension */,
+				C638640B2F46566C0024A0DF /* Gridt */,
+				C63864352F4658000024A0DF /* GridtWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -229,7 +229,7 @@
 /* Begin PBXTargetDependency section */
 		C638643C2F4658000024A0DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C63864352F4658000024A0DF /* GritWidgetExtension */;
+			target = C63864352F4658000024A0DF /* GridtWidgetExtension */;
 			targetProxy = C638643B2F4658000024A0DF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -361,13 +361,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Grit/Grit.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Gridt/Gridt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UWP57D8782;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Grit reads your workout data to display your training activity on the contribution calendar.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Gridt reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -378,7 +378,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov;
+				PRODUCT_BUNDLE_IDENTIFIER = gridt.Gridt.kochetov;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -392,13 +392,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Grit/Grit.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Gridt/Gridt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F82X95T478;
+				DEVELOPMENT_TEAM = UWP57D8782;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Grit reads your workout data to display your training activity on the contribution calendar.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Gridt reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -409,7 +409,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov;
+				PRODUCT_BUNDLE_IDENTIFIER = gridt.Gridt.kochetov;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -423,13 +423,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = GritWidget/GritWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = GridtWidget/GridtWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UWP57D8782;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GritWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GritWidget;
+				INFOPLIST_FILE = GridtWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GridtWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,7 +437,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov.GritWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = gridt.Gridt.kochetov.GridtWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -451,13 +451,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = GritWidget/GritWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = GridtWidget/GridtWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UWP57D8782;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GritWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GritWidget;
+				INFOPLIST_FILE = GridtWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GridtWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -465,7 +465,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grit.Grit.kochetov.GritWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = gridt.Gridt.kochetov.GridtWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -477,7 +477,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C63864072F46566C0024A0DF /* Build configuration list for PBXProject "Grit" */ = {
+		C63864072F46566C0024A0DF /* Build configuration list for PBXProject "Gridt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C63864152F46566E0024A0DF /* Debug */,
@@ -486,7 +486,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C63864172F46566E0024A0DF /* Build configuration list for PBXNativeTarget "Grit" */ = {
+		C63864172F46566E0024A0DF /* Build configuration list for PBXNativeTarget "Gridt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C63864182F46566E0024A0DF /* Debug */,
@@ -495,7 +495,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GritWidgetExtension" */ = {
+		C63864382F4658000024A0DF /* Build configuration list for PBXNativeTarget "GridtWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C63864362F4658000024A0DF /* Debug */,

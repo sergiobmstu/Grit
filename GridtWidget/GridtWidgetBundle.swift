@@ -2,8 +2,8 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct GritWidgetBundle: WidgetBundle {
+struct GridtWidgetBundle: WidgetBundle {
     var body: some Widget {
-        GritWidget()
+        GridtWidget()
     }
 }

@@ -14,7 +14,7 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Grit")
+            .navigationTitle("Gridt")
             .onAppear { store.send(.onAppear) }
             .sheet(
                 item: $store.scope(state: \.goalSetup, action: \.goalSetup)

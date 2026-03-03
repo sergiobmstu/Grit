@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 import WidgetKit
 
-private let appGroupID = "group.grit.Grit"
+private let appGroupID = "group.gridt.Gridt"
 private let sharedDefaults = UserDefaults(suiteName: appGroupID)
 
 @Reducer

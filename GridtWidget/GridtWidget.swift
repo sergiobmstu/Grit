@@ -3,11 +3,11 @@ import SwiftUI
 
 // MARK: - App Group
 
-private let appGroupID = "group.grit.Grit"
+private let appGroupID = "group.gridt.Gridt"
 
 // MARK: - Timeline Entry
 
-struct GritWidgetEntry: TimelineEntry {
+struct GridtWidgetEntry: TimelineEntry {
     let date: Date
     let daysRemaining: Int?
     let goalDate: Date?
@@ -17,16 +17,16 @@ struct GritWidgetEntry: TimelineEntry {
 
 // MARK: - Timeline Provider
 
-struct GritWidgetProvider: TimelineProvider {
-    func placeholder(in context: Context) -> GritWidgetEntry {
-        GritWidgetEntry(date: Date(), daysRemaining: 42, goalDate: nil, raceDistance: "42K", workoutCounts: [:])
+struct GridtWidgetProvider: TimelineProvider {
+    func placeholder(in context: Context) -> GridtWidgetEntry {
+        GridtWidgetEntry(date: Date(), daysRemaining: 42, goalDate: nil, raceDistance: "42K", workoutCounts: [:])
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (GritWidgetEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (GridtWidgetEntry) -> Void) {
         completion(readEntry())
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<GritWidgetEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<GridtWidgetEntry>) -> Void) {
         let entry = readEntry()
         let tomorrow = Calendar.current.startOfDay(
             for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!
@@ -35,7 +35,7 @@ struct GritWidgetProvider: TimelineProvider {
         completion(timeline)
     }
 
-    private func readEntry() -> GritWidgetEntry {
+    private func readEntry() -> GridtWidgetEntry {
         let defaults = UserDefaults(suiteName: appGroupID)
 
         var goalDate: Date?
@@ -66,7 +66,7 @@ struct GritWidgetProvider: TimelineProvider {
             daysRemaining = max(0, calendar.dateComponents([.day], from: today, to: goal).day ?? 0)
         }
 
-        return GritWidgetEntry(
+        return GridtWidgetEntry(
             date: Date(),
             daysRemaining: daysRemaining,
             goalDate: goalDate,
@@ -78,8 +78,8 @@ struct GritWidgetProvider: TimelineProvider {
 
 // MARK: - Widget Views
 
-struct GritWidgetEntryView: View {
-    let entry: GritWidgetEntry
+struct GridtWidgetEntryView: View {
+    let entry: GridtWidgetEntry
     @Environment(\.widgetFamily) var family
 
     var body: some View {
@@ -108,7 +108,7 @@ struct GritWidgetEntryView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             } else {
-                Text("Grit")
+                Text("Gridt")
                     .font(.headline)
                     .foregroundStyle(.green)
             }
@@ -135,7 +135,7 @@ struct GritWidgetEntryView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("Grit")
+                    Text("Gridt")
                         .font(.title2.bold())
                         .foregroundStyle(.green)
                 }
@@ -240,15 +240,15 @@ private enum MiniDayCell {
 
 // MARK: - Widget Configuration
 
-struct GritWidget: Widget {
-    let kind: String = "GritWidget"
+struct GridtWidget: Widget {
+    let kind: String = "GridtWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: GritWidgetProvider()) { entry in
-            GritWidgetEntryView(entry: entry)
+        StaticConfiguration(kind: kind, provider: GridtWidgetProvider()) { entry in
+            GridtWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Grit")
+        .configurationDisplayName("Gridt")
         .description("Track your running streak and goal countdown.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
