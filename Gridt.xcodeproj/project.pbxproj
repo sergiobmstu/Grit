@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C638641C2F4656E10024A0DF /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C638641B2F4656E10024A0DF /* ComposableArchitecture */; };
 		C638643A2F4658000024A0DF /* GridtWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C63864302F4658000024A0DF /* GridtWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E6C58AA02F5758A50033327F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = E6C58A9F2F5758A50033327F /* FirebaseCore */; };
+		E6C58AA22F5758C00033327F /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = E6C58AA12F5758C00033327F /* FirebaseAppDistribution-Beta */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,11 +50,21 @@
 			);
 			target = C63864352F4658000024A0DF /* GridtWidgetExtension */;
 		};
+		E6C58A9D2F57586E0033327F /* Exceptions for "Gridt" folder in "Gridt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C638640B2F46566C0024A0DF /* Gridt */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C638640E2F46566C0024A0DF /* Gridt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E6C58A9D2F57586E0033327F /* Exceptions for "Gridt" folder in "Gridt" target */,
+			);
 			path = Gridt;
 			sourceTree = "<group>";
 		};
@@ -71,7 +83,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6C58AA02F5758A50033327F /* FirebaseCore in Frameworks */,
 				C638641C2F4656E10024A0DF /* ComposableArchitecture in Frameworks */,
+				E6C58AA22F5758C00033327F /* FirebaseAppDistribution-Beta in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +104,7 @@
 			children = (
 				C638640E2F46566C0024A0DF /* Gridt */,
 				C63864312F4658000024A0DF /* GridtWidget */,
+				E6C58A9E2F5758A50033327F /* Frameworks */,
 				C638640D2F46566C0024A0DF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,6 +116,13 @@
 				C63864302F4658000024A0DF /* GridtWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E6C58A9E2F5758A50033327F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,6 +148,8 @@
 			name = Gridt;
 			packageProductDependencies = (
 				C638641B2F4656E10024A0DF /* ComposableArchitecture */,
+				E6C58A9F2F5758A50033327F /* FirebaseCore */,
+				E6C58AA12F5758C00033327F /* FirebaseAppDistribution-Beta */,
 			);
 			productName = Gridt;
 			productReference = C638640C2F46566C0024A0DF /* Gridt.app */;
@@ -180,6 +204,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C638641A2F4656E10024A0DF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				E6C58A742F5757A30033327F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C638640D2F46566C0024A0DF /* Products */;
@@ -367,6 +392,7 @@
 				DEVELOPMENT_TEAM = UWP57D8782;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gridt/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Gridt reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -398,6 +424,7 @@
 				DEVELOPMENT_TEAM = UWP57D8782;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gridt/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Gridt reads your workout data to display your training activity on the contribution calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -515,6 +542,14 @@
 				minimumVersion = 1.23.1;
 			};
 		};
+		E6C58A742F5757A30033327F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.10.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -522,6 +557,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C638641A2F4656E10024A0DF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		E6C58A9F2F5758A50033327F /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C58A742F5757A30033327F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		E6C58AA12F5758C00033327F /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C58A742F5757A30033327F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
