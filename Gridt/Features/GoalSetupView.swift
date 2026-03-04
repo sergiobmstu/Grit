@@ -306,22 +306,33 @@ struct GoalSetupView: View {
                 .buttonStyle(.plain)
 
                 // AI-assisted Plan
-                VStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                        .font(.title2)
-                    Text("AI Plan")
-                        .font(.subheadline.weight(.medium))
-                    Text("Coming Soon")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                Button {
+                    store.selectedPlanType = .aiAssisted
+                } label: {
+                    VStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .font(.title2)
+                        Text("AI Plan")
+                            .font(.subheadline.weight(.medium))
+                        Text("Personalized")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(
+                                store.selectedPlanType == .aiAssisted ? Color.green : Color.secondary.opacity(0.3),
+                                lineWidth: store.selectedPlanType == .aiAssisted ? 2 : 1
+                            )
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(store.selectedPlanType == .aiAssisted ? Color.green.opacity(0.1) : Color.clear)
+                    )
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                )
-                .opacity(0.5)
+                .buttonStyle(.plain)
             }
         }
     }

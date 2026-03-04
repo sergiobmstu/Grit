@@ -9,6 +9,10 @@ struct TrainingPlanGenerator: Sendable {
 extension TrainingPlanGenerator: DependencyKey {
     static let liveValue = TrainingPlanGenerator(
         generatePlan: { goal in
+            if goal.planType == .aiAssisted {
+                return try await generateAIPlan(goal: goal)
+            }
+
             let calendar = Calendar.current
             let today = calendar.startOfDay(for: Date())
             let raceDay = calendar.startOfDay(for: goal.raceDate)
